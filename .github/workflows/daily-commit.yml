@@ -1,0 +1,33 @@
+name: Daily commit
+
+# Commit harian otomatis setiap pukul 08.00 WITA (00.00 UTC).
+# Jadwal GitHub Actions kadang tertunda beberapa menit.
+on:
+  schedule:
+    - cron: "3 0 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  commit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Update daily log
+        run: |
+          mkdir -p .daily
+          TZ=Asia/Makassar date '+%Y-%m-%d %H:%M WITA' > .daily/last-update.txt
+          TZ=Asia/Makassar date '+- %Y-%m-%d' >> .daily/log.md
+
+      - name: Commit & push
+        run: |
+          # Email harus terdaftar di akun GitHub agar commit terhitung sebagai kontribusi
+          git config user.name "NahwaKakaa"
+          git config user.email "13020230187@student.umi.ac.id"
+          git add .daily
+          git commit -m "Daily update $(TZ=Asia/Makassar date '+%Y-%m-%d')" || exit 0
+          git pull --rebase
+          git push
