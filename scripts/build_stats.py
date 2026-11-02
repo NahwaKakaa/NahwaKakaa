@@ -133,7 +133,8 @@ def build(stats):
         s += text_rects("LOADING DATA...", 468, 80, 2, "#8b949e")
     for i, (name, color, pct) in enumerate(langs):
         y = 72 + i * 36
-        label = name.upper()[:12]
+        aliases = {"Jupyter Notebook": "Jupyter", "Visual Basic .NET": "VB.NET"}
+        label = aliases.get(name, name).upper()[:16]
         s += text_rects(label, 468, y, 2, "#c9d1d9")
         p = f"{pct:.1f}%"
         s += text_rects(p, 852 - text_width(p, 2), y, 2, "#8b949e")
